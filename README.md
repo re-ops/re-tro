@@ -1,6 +1,6 @@
 # About
 
-Re-ops, a Functional Live-Infrastructure as Code presentation, can be viewed [online](http://re-ops.github.io/re-tro/).
+Re-ops, a Functional Live-Infrastructure as Code presentation, can be viewed [online](http://re-ops.github.io/re-tro/index.html).
 
 # License
 
