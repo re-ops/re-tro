@@ -1,18 +1,18 @@
-; we have 4 machines
-
-sandbox
-
 ; setup all sub systems
 
 (go)
 
+; we have 4 machines
+
+(hosts)
+
 ; run a simple ls on them
 
-(listing sandbox)
+(listing (hosts))
 
 ; all green! now lets apt update them
 
-(aptdate sandbox)
+(aptdate (hosts))
 
 ; lets drill down into a single host
 
@@ -24,7 +24,7 @@ sandbox
 
 ; list
 
-(listing sandbox)
+(listing (hosts))
 
 ; make things quite again
 
@@ -32,4 +32,4 @@ sandbox
 
 ; all quite now
 
-(listing sandbox)
+(listing (hosts))

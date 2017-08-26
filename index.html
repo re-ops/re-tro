@@ -55,7 +55,7 @@
 
         <section id="re-mote">
 	    <h2>Re-mote</h2>
-	    <p> Remote automation</p>
+	    <p> Remote automation (over ssh using sshj)</p>
 	    <p> Data collection, filtering, manipulation and publishing</p>
 	    <p> Scheduled execution </p>
 	  </section>
@@ -88,7 +88,6 @@
 	    </ul>
 	  </section>
 
-
 	  <section>
 	    <h2>Pipelines</h2>
 	    <pre><code class="clojure" data-trim contenteditable>
@@ -104,6 +103,18 @@
 expands to: (| (| (ls ..) (pick ..)) (pretty))
 
 	    </code></pre>
+	  </section>
+
+
+	  <section>
+	    <h2>Shell scripting (pallet.stevedore)</h2>
+	    <pre><code class="clojure" data-trim contenteditable>
+; expands into
+; # base.clj:190
+; ls / -la
+(let [target "/" flags "-la"]
+  (script ("ls" ~target ~flags)))
+	  </code></pre>
 	  </section>
 
 	  <section>
@@ -143,7 +154,7 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 ; Saturday 4 AM
 (defn zfs-jobs [hs]
   (watch :scrub (at-day DateTimeConstants/SATURDAY 4)
-    (fn [] (run (scrub hs "datastore") | (email "scrubing /datastore")))))
+    (fn [] (run (scrub hs "tank") | (email "scrub done")))))
 	    </code></pre>
 	  </section>
 
@@ -167,16 +178,18 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 	  </section>
 
 	  <section>
-	    <h2>Reset </h2>
-	    <p> Resets VARS</p>
-	    <p> Across threads</p>
-	    <p> Atoms zeroed out</p>
+	    <h2> Reset </h2>
+	    <p> clojure.tools.namespace.repl refresh refresh-all</p>
+	    <p> Works across threads</p>
+	    <p class="fragment highlight-red"> Reset all VARS</p>
+	    <p class="fragment highlight-red"> Atoms state lost</p>
+	    <p class="fragment highlight-green"> Re-defining preferred (protocols)</p>
 	  </section>
 
 	  <section>
 	    <h3> Re-core</h3>
-	    <p> Manage VMs across AWS, DigitalOcean, KVM</p>
-	    <p> Uses Redis/ES</p>
+	    <p> Manage VMs under AWS, DigitalOcean and KVM</p>
+	    <p> Persistent (Redis/ES)</p>
 	    <p> Pipline/Protocol patterns</p>
 	  </section>
 
