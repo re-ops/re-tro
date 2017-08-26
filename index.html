@@ -1,0 +1,294 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Re-ops, a Functional Live-Infrastructure as Code</title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+	var link = document.createElement( 'link' );
+	link.rel = 'stylesheet';
+	link.type = 'text/css';
+	link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+	document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+  </head>
+  <body>
+    <div class="reveal">
+	<div class="slides">
+	  <section>
+	    <h1>Re-ops</h1>
+	    <h3>Functional Live-Infrastructure as Code</h3>
+	    <p>
+		<small>Created by <a href="https://narkisr.com">Ronen Narkis</a> / <a href="http://twitter.com/narkisr">@narkisr</a></small>
+		<small><a href="#/themes">settings</a></small>
+	    </p>
+	  </section>
+
+	  <section id="Intro">
+	    <h2>Operations</h2>
+	    <p> <span class="fragment highlight-blue"> Orchestrating </span> Machines <span class="fragment highlight-blue"> remotely </span> </p>
+	    <p> while manipulating their <span class="fragment highlight-red"> state </span> </p>
+	  </section>
+
+	  <section id="shorts">
+	    <h2> Shortcomings </h2>
+	    <p class ="fragment fade-down">Complex </p>
+	    <p class ="fragment fade-down">Slow cycles</p>
+	    <p class ="fragment fade-down">No composes well</p>
+	    <p class ="fragment fade-down">Data is second class</p>
+	  </section>
+
+	  <section id= "fragments">
+	    <h2>Re-ops</h2>
+	    <p class="fragment">Live environment for managing computer resources</p>
+	    <p class="fragment">Composed from <span class="fragment fade-up">re-core,</span> <span class="fragment fade-up">re-mote</span><span class="fragment fade-up">, re-gent</span></p>
+	  </section>
+
+        <section id="re-mote">
+	    <h2>Re-mote</h2>
+	    <p> Remote automation</p>
+	    <p> Data collection, filtering, manipulation and publishing</p>
+	    <p> Scheduled execution </p>
+	  </section>
+
+	  <section>
+	    <h2>Hosts</h2>
+	    <pre><code class="clojure" data-trim contenteditable>
+(def sandbox (Hosts. {:user "ronen"} ["host-a" ,,,,]))
+
+(defprotocol Shell
+  (ls [this target flags]))
+
+(extend-type Hosts
+   Shell
+  (ls [this target flags]
+   ; implementation
+  ))
+
+(defn listing [hs]
+  (run (ls hs "/" "-la") | (pretty)))
+	    </code></pre>
+	  </section>
+
+	  <section>
+	    <h2> Piplines </h2>
+	    <ul>
+		<li> Data flows from one function to the next </li>
+	      <li> Intermediate functions operate on data </li>
+		<li> Final function publish, blocks/async</li>
+	    </ul>
+	  </section>
+
+
+	  <section>
+	    <h2>Pipelines</h2>
+	    <pre><code class="clojure" data-trim contenteditable>
+
+                            filtering             output
+                                ^                   ^
+(defn listing [hs]              |                   |
+  (run (ls hs "/" "-la") | (pick successful) | (pretty)))
+   |                     |
+   |                     V
+   |       [this, {:successful [], :failure []}
+   V
+expands to: (| (| (ls ..) (pick ..)) (pretty))
+
+	    </code></pre>
+	  </section>
+
+	  <section>
+	    <h2> Publishing </h2>
+	    <pre><code class="clojure" data-trim contenteditable>
+(defn cpu-publish
+ "CPU usage and idle stats collection and publishing"
+  [hs]
+  (run (cpu hs)
+     | (collect)
+     | (publish (stock "Idle CPU" :timeseries :idle))
+     | (publish (stock "User CPU" :timeseries :usr))))
+	  </code></pre>
+	  </section>
+
+	  <section>
+	    <h2> Dashboard </h2>
+	    <img src="./img/dashboard.png" alt="">
+	  </section>
+
+	  <section id="re-mote-demo">
+	    <p>Re-mote demo </p>
+	    <img src="./gifs/re-mote-demo.gif" alt="" width="1500px" height="500px">
+	  </section>
+
+	  <section>
+	    <h2>Scheduling</h2>
+	    <pre><code class="clojure" data-trim contenteditable>
+; every day on 10 AM
+(defn apt-jobs [hosts]
+  (watch :update (every-day 10) (fn [] (aptdate hosts))))
+
+; every 5 seconds
+(defn stats-jobs [hs]
+  (watch :cpu (seconds 5) (fn [] (cpu-publish hs))))
+
+; Saturday 4 AM
+(defn zfs-jobs [hs]
+  (watch :scrub (at-day DateTimeConstants/SATURDAY 4)
+    (fn [] (run (scrub hs "datastore") | (email "scrubing /datastore")))))
+	    </code></pre>
+	  </section>
+
+	  <section>
+	    <h2> Reloaded workflow </h2>
+<pre><code class="clojure" data-trim contenteditable>
+(ns user
+  [clojure.tools.namespace.repl :refer (refresh refresh-all)]
+  ....
+ )
+
+; create environment from scratch
+(go)
+
+; halt the environment
+(stop)
+
+; stop and go (when re-defining does not work)
+(reset)
+</code></pre>
+	  </section>
+
+	  <section>
+	    <h2>Reset </h2>
+	    <p> Resets VARS</p>
+	    <p> Across threads</p>
+	    <p> Atoms zeroed out</p>
+	  </section>
+
+	  <section>
+	    <h3> Re-core</h3>
+	    <p> Manage VMs across AWS, DigitalOcean, KVM</p>
+	    <p> Uses Redis/ES</p>
+	    <p> Pipline/Protocol patterns</p>
+	  </section>
+
+	  <section>
+	    <h2>Systems</h2>
+	    <pre><code class="clojure" data-trim contenteditable>
+(def systems (Systems.))
+
+(defn list
+  "List available instances:
+    (list) ; list all
+    (list ip) ; list all with ip (running)
+  "
+  ([]
+   (list identity))
+  ([f]
+   (run (ls systems) | (filter-by f) | (pretty))))
+                     ^
+                     |
+                  [this, {:systems [...]}]
+	    </code></pre>
+	  </section>
+
+	  <section>
+	    <h2>System model</h2>
+	    <pre><code class="clojure" data-trim contenteditable>
+{
+  :machine {
+    :hostname "reops" :user "re-ops" :domain "local"
+    :os :ubuntu-16.04 :cpu 2 :ram 1024
+  }
+
+  :kvm {
+    :node :remote
+  }
+
+  :type "reops"
+}
+	    </code></pre>
+	  </section>
+
+	  <section id="re-core-demo">
+	    <p>Re-core Demo</p>
+	    <img src="./gifs/re-core-demo.gif" alt="" width="1200px" height="500px">
+	  </section>
+
+
+	  <section>
+	    <h3> Re-gent </h3>
+	    <p> Fast persistent secure connections (Zeromq)</p>
+	    <p> Distributed Clojure functions </p>
+	    <p> Easy to deploy </p>
+	  </section>
+
+	  <section>
+	    <pre><code class="clojure" data-trim contenteditable>
+
+; using serializable.fn
+(def ^{:doc "adding one"} plus-one
+  (s/fn [x] (+ 1 x)))
+
+; call sandbox hosts cluster
+(call plus-one [1] sandbox)
+
+	    </code></pre>
+	  </section>
+
+	  <section id="re-gent-demo">
+	    <p>Re-gent Demo</p>
+	    <img src="./gifs/re-gent-demo.gif" alt="" width="1500px" height="500px">
+	  </section>
+
+	  <section>
+	    <h2> Summary </h2>
+	  </section>
+
+	  <section id="themes">
+	    <h2>Settings</h2>
+	    <p>
+		Select theme: <br>
+		<!-- Hacks to swap themes after the page has loaded. Not flexible and only intended for the reveal.js demo deck. -->
+		<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/black.css'); return false;">Black (default)</a> -
+		<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/white.css'); return false;">White</a> -
+		<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/league.css'); return false;">League</a> -
+		<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/sky.css'); return false;">Sky</a> -
+		<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/beige.css'); return false;">Beige</a> -
+		<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/simple.css'); return false;">Simple</a> <br>
+		<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/serif.css'); return false;">Serif</a> -
+		<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/blood.css'); return false;">Blood</a> -
+		<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/night.css'); return false;">Night</a> -
+		<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/moon.css'); return false;">Moon</a> -
+		<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/solarized.css'); return false;">Solarized</a>
+	    </p>
+	  </section>
+	</div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+	// More info about config & dependencies:
+	// - https://github.com/hakimel/reveal.js#configuration
+	// - https://github.com/hakimel/reveal.js#dependencies
+    Reveal.initialize({
+dependencies: [
+{ src: 'plugin/markdown/marked.js' },
+{ src: 'plugin/markdown/markdown.js' },
+{ src: 'plugin/notes/notes.js', async: true },
+{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+]
+});
+    </script>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+Re-ops, a Functional Live-Infrastructure as Code
+The history of live coding environments isn't new, still most of the current tools we use are static in nature and require long cycles of build/compilation/restart both in development and production, the REPL is one of the most productive environments to get instant feedback and have become the standard for contemporary functional languages.
+
+In this talk we will go through Re-ops, a Clojure based live environment that aims to speed up remote server management, from ad hoc remote operations to metrics collection/reporting up to managing clusters of virtual machines.
+
+Current configuration management tools (Puppet/Chef/Ansible) are custom environments running on top of Ruby/Python that don't interact (for the most part) with the hosting platform, Re-ops on the other hand is native Clojure and can use any library and language facility.
+
+Using function composition, protocols and data structures with a dash of macros we create our own core abstractions, matching the lisp philosophy of extending the language to match our needs while keeping it simple to extend and use.
+
+Re-ops is composed from a number of components:
+
+Re-core: VM management and tracking (AWS, Digital Ocean, KVM), using async job execution.
+Re-mote, remote operations on systems using SSH and ZeroMQ including data collection, aggregation, dashboarding and scheduling.
+Re-gent, remote agent that uses ZeroMQ and connects back to Re-mote, used for high throughput low latency operations (an alternative to SSH).
+Each can be used separately or combined.
+In summary Re-ops offers an alternative for creating infrastructure as code, one in which we can react quickly to a fast changing environment.
+
+Goals:
+
+To expose listeners to a different way of thinking with regards to operations (Devops).
+To showcase how to design a system that works well as a live environment both in Clojure (the reload workflow) and the general case.
+Explore protocols, functional composition and pipelines as a base for rapidly changing system.
+How to design the system for explorability
+Cover some interesting libraries used within Re-ops
+Compare Puppet/Chef and show how using Clojure really simplify some problems.

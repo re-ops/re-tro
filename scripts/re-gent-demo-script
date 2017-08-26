@@ -1,0 +1,20 @@
+(go)
+
+; no hosts registered
+
+(registered-hosts)
+
+; deploy agent
+
+(re-gent-deploy (hosts) "/home/ronen/code/re-ops/re-gent/target/re-gent")
+
+(registered-hosts)
+
+; call plus-1 on the cluster
+
+(call plus-one [1] (hosts identity :hostname))
+
+; view results
+(pretty-result "reops-0" :plus-one)
+(pretty-result "reops-1" :plus-one)
+

@@ -1,0 +1,35 @@
+; we have 4 machines
+
+sandbox
+
+; setup all sub systems
+
+(go)
+
+; run a simple ls on them
+
+(listing sandbox)
+
+; all green! now lets apt update them
+
+(aptdate sandbox)
+
+; lets drill down into a single host
+
+(log-hosts "re-a")
+
+; redirect output to the repl
+
+(redirect-output ["re-mote.log"])
+
+; list
+
+(listing sandbox)
+
+; make things quite again
+
+(reset)
+
+; all quite now
+
+(listing sandbox)

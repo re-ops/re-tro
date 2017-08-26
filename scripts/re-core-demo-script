@@ -1,0 +1,34 @@
+
+(go)
+
+; no systems yet
+
+(list)
+
+; lets create a couple
+
+(up (kvm-instance :reops-kvm) 2 :skip-provision true)
+
+; list all
+
+(list)
+
+; view systems with ip (running)
+
+(list ip)
+
+; halt by id
+
+(halt (with-ids []))
+
+; start only those down
+
+(start (comp not ip))
+
+; into hosts
+
+(listing (hosts))
+
+; destroy all forcefuly
+
+(destroy identity {:force true})
