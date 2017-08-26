@@ -24,7 +24,7 @@
   <body>
     <div class="reveal">
 	<div class="slides">
-	  <section>
+	  <section id="title">
 	    <h1>Re-ops</h1>
 	    <h3>Functional Live-Infrastructure as Code</h3>
 	    <p>
@@ -47,20 +47,20 @@
 	    <p class ="fragment fade-down">Data is second class</p>
 	  </section>
 
-	  <section id= "fragments">
+	  <section id= "re-ops">
 	    <h2>Re-ops</h2>
 	    <p class="fragment">Live environment for managing computer resources</p>
 	    <p class="fragment">Composed from <span class="fragment fade-up">re-core,</span> <span class="fragment fade-up">re-mote</span><span class="fragment fade-up">, re-gent</span></p>
 	  </section>
 
-        <section id="re-mote">
+        <section id="re-mote-overview">
 	    <h2>Re-mote</h2>
 	    <p> Remote automation (over ssh using sshj)</p>
 	    <p> Data collection, filtering, manipulation and publishing</p>
 	    <p> Scheduled execution </p>
 	  </section>
 
-	  <section>
+	  <section id="hosts">
 	    <h2>Hosts</h2>
 	    <pre><code class="clojure" data-trim contenteditable>
 (def sandbox (Hosts. {:user "ronen"} ["host-a" ,,,,]))
@@ -79,7 +79,7 @@
 	    </code></pre>
 	  </section>
 
-	  <section>
+	  <section id="pipelines-overview">
 	    <h2> Piplines </h2>
 	    <ul>
 		<li> Data flows from one function to the next </li>
@@ -88,7 +88,7 @@
 	    </ul>
 	  </section>
 
-	  <section>
+	  <section id="pipelines-example">
 	    <h2>Pipelines</h2>
 	    <pre><code class="clojure" data-trim contenteditable>
 
@@ -106,7 +106,7 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 	  </section>
 
 
-	  <section>
+	  <section id="stevedore">
 	    <h2>Shell scripting (pallet.stevedore)</h2>
 	    <pre><code class="clojure" data-trim contenteditable>
 ; expands into
@@ -117,7 +117,7 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 	  </code></pre>
 	  </section>
 
-	  <section>
+	  <section id="publishing">
 	    <h2> Publishing </h2>
 	    <pre><code class="clojure" data-trim contenteditable>
 (defn cpu-publish
@@ -130,17 +130,19 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 	  </code></pre>
 	  </section>
 
-	  <section>
+	  <section id="dashboard">
 	    <h2> Dashboard </h2>
 	    <img src="./img/dashboard.png" alt="">
 	  </section>
 
 	  <section id="re-mote-demo">
 	    <p>Re-mote demo </p>
-	    <img src="./gifs/re-mote-demo.gif" alt="" width="1500px" height="500px">
+	    <a href="./gifs/re-mote-demo.gif">
+	     <img src="./gifs/re-mote-demo.gif" alt="" width="1500px" height="500px">
+	    </a>
 	  </section>
 
-	  <section>
+	  <section id="scheduling">
 	    <h2>Scheduling</h2>
 	    <pre><code class="clojure" data-trim contenteditable>
 ; every day on 10 AM
@@ -158,7 +160,7 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 	    </code></pre>
 	  </section>
 
-	  <section>
+	  <section id="reloaded">
 	    <h2> Reloaded workflow </h2>
 <pre><code class="clojure" data-trim contenteditable>
 (ns user
@@ -177,7 +179,7 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 </code></pre>
 	  </section>
 
-	  <section>
+	  <section id="reset">
 	    <h2> Reset </h2>
 	    <p> clojure.tools.namespace.repl refresh refresh-all</p>
 	    <p> Works across threads</p>
@@ -186,14 +188,14 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 	    <p class="fragment highlight-green"> Re-defining preferred (protocols)</p>
 	  </section>
 
-	  <section>
+	  <section id="re-core-overview">
 	    <h3> Re-core</h3>
 	    <p> Manage VMs under AWS, DigitalOcean and KVM</p>
 	    <p> Persistent (Redis/ES)</p>
 	    <p> Pipline/Protocol patterns</p>
 	  </section>
 
-	  <section>
+	  <section id="systems">
 	    <h2>Systems</h2>
 	    <pre><code class="clojure" data-trim contenteditable>
 (def systems (Systems.))
@@ -213,7 +215,7 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 	    </code></pre>
 	  </section>
 
-	  <section>
+	  <section id="systems-model">
 	    <h2>System model</h2>
 	    <pre><code class="clojure" data-trim contenteditable>
 {
@@ -237,14 +239,14 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 	  </section>
 
 
-	  <section>
+	  <section id="re-gent-overview">
 	    <h3> Re-gent </h3>
 	    <p> Fast persistent secure connections (Zeromq)</p>
 	    <p> Distributed Clojure functions </p>
 	    <p> Easy to deploy </p>
 	  </section>
 
-	  <section>
+	  <section id="re-gent-example">
 	    <pre><code class="clojure" data-trim contenteditable>
 
 ; using serializable.fn
@@ -264,6 +266,8 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 
 	  <section>
 	    <h2> Summary </h2>
+	    <p> Check <a href="https://github.com/re-ops">https://github.com/re-ops</a> </p>
+          <p> <a href="https://twitter.com/narkisr">@narkisr</a></p>
 	  </section>
 
 	  <section id="themes">
@@ -295,6 +299,8 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 	// - https://github.com/hakimel/reveal.js#configuration
 	// - https://github.com/hakimel/reveal.js#dependencies
     Reveal.initialize({
+slideNumber: true,
+history: true,
 dependencies: [
 { src: 'plugin/markdown/marked.js' },
 { src: 'plugin/markdown/markdown.js' },
