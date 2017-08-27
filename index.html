@@ -34,29 +34,30 @@
 	  </section>
 
 	  <section id="Intro">
-	    <h2>Operations</h2>
-	    <p> <span class="fragment highlight-blue"> Orchestrating </span> Machines <span class="fragment highlight-blue"> remotely </span> </p>
-	    <p> while manipulating their <span class="fragment highlight-red"> state </span> </p>
+	    <h2>Domain</h2>
+	    <p> Operations, <span class="fragment highlight-blue"> Orchestrating </span> Machines <span class="fragment highlight-blue"> remotely </span> </p>
+	    <p> and manipulating their <span class="fragment highlight-red"> state </span> </p>
 	  </section>
 
 	  <section id="shorts">
 	    <h2> Shortcomings </h2>
 	    <p class ="fragment fade-down">Complex </p>
 	    <p class ="fragment fade-down">Slow cycles</p>
-	    <p class ="fragment fade-down">No composes well</p>
+	    <p class ="fragment fade-down">Hard to composes</p>
 	    <p class ="fragment fade-down">Data is second class</p>
 	  </section>
 
 	  <section id= "re-ops">
 	    <h2>Re-ops</h2>
-	    <p class="fragment">Live environment for managing computer resources</p>
+	    <p class="fragment">Live environment for managing servers</p>
 	    <p class="fragment">Composed from <span class="fragment fade-up">re-core,</span> <span class="fragment fade-up">re-mote</span><span class="fragment fade-up">, re-gent</span></p>
+	    <p class="fragment">No magic, functions and a dash of macros! </p>
 	  </section>
 
         <section id="re-mote-overview">
 	    <h2>Re-mote</h2>
-	    <p> Remote automation (over ssh using sshj)</p>
-	    <p> Data collection, filtering, manipulation and publishing</p>
+	    <p> Remote automation</p>
+	    <p> Data collection, publishing</p>
 	    <p> Scheduled execution </p>
 	  </section>
 
@@ -81,15 +82,15 @@
 
 	  <section id="pipelines-overview">
 	    <h2> Piplines </h2>
-	    <ul>
-		<li> Data flows from one function to the next </li>
-	      <li> Intermediate functions operate on data </li>
-		<li> Final function publish, blocks/async</li>
-	    </ul>
+            <p class="fragment"> Series of functions (operations)</p>
+		<p class="fragment"> Data flows from one function to the next </p>
+	      <p class="fragment"> Intermediate functions operate on data </p>
+		<p class="fragment"> Final function output, publish, block/run async etc..</p>
+		<p class="fragment"> We can compose pipelines (just functions)</p>
 	  </section>
 
 	  <section id="pipelines-example">
-	    <h2>Pipelines</h2>
+	    <h2>Pipeline deconstruction</h2>
 	    <pre><code class="clojure" data-trim contenteditable>
 
                             filtering             output
@@ -102,9 +103,31 @@
    V
 expands to: (| (| (ls ..) (pick ..)) (pretty))
 
+; pipe expansion
+(let [[this' res] (ls hs)]
+  (pick this' res))
+
 	    </code></pre>
 	  </section>
 
+  <section id="publishing">
+	    <h2> Publishing </h2>
+	    <pre><code class="clojure" data-trim contenteditable>
+; free uses free-script
+(defn #^{:category :stats} ram-publish
+  "RAM free and used percentage collection and publishing"
+  [hs]
+  (run (free hs)
+     | (collect)
+     | (publish (stock "Free RAM" :timeseries :free))
+     | (publish (stock "Used RAM" :timeseries :used))))
+	  </code></pre>
+	  </section>
+
+	 <section id="dashboard">
+	    <h2> Dashboard </h2>
+	    <img src="./img/dashboard.png" alt="">
+	  </section>
 
 	  <section id="stevedore">
 	    <h2>Stevedore</h2>
@@ -125,24 +148,6 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 	  </code></pre>
 	  </section>
 
-	  <section id="publishing">
-	    <h2> Publishing </h2>
-	    <pre><code class="clojure" data-trim contenteditable>
-(defn cpu-publish
- "CPU usage and idle stats collection and publishing"
-  [hs]
-  (run (cpu hs)
-     | (collect)
-     | (publish (stock "Idle CPU" :timeseries :idle))
-     | (publish (stock "User CPU" :timeseries :usr))))
-	  </code></pre>
-	  </section>
-
-	  <section id="dashboard">
-	    <h2> Dashboard </h2>
-	    <img src="./img/dashboard.png" alt="">
-	  </section>
-
 	  <section id="re-mote-demo">
 	    <p>Re-mote demo </p>
 	    <a href="./gifs/re-mote-demo.gif">
@@ -154,8 +159,8 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 	    <h2>Scheduling</h2>
 	    <pre><code class="clojure" data-trim contenteditable>
 ; every day on 10 AM
-(defn apt-jobs [hosts]
-  (watch :update (every-day 10) (fn [] (aptdate hosts))))
+(defn apt-jobs [hs]
+  (watch :update (every-day 10) (fn [] (aptdate hs))))
 
 ; every 5 seconds
 (defn stats-jobs [hs]
@@ -168,38 +173,11 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 	    </code></pre>
 	  </section>
 
-	  <section id="reloaded">
-	    <h2> Reloaded workflow </h2>
-<pre><code class="clojure" data-trim contenteditable>
-(ns user
-  [clojure.tools.namespace.repl :refer (refresh refresh-all)]
-  ....
- )
-
-; create environment from scratch
-(go)
-
-; halt the environment
-(stop)
-
-; stop and go (when re-defining does not work)
-(reset)
-</code></pre>
-	  </section>
-
-	  <section id="reset">
-	    <h2> Reset </h2>
-	    <p> clojure.tools.namespace.repl refresh refresh-all</p>
-	    <p> Works across threads</p>
-	    <p class="fragment highlight-red"> Reset all VARS</p>
-	    <p class="fragment highlight-red"> Atoms state lost</p>
-	    <p class="fragment highlight-green"> Re-defining preferred (protocols)</p>
-	  </section>
-
 	  <section id="re-core-overview">
 	    <h3> Re-core</h3>
 	    <p> Manage VMs under AWS, DigitalOcean and KVM</p>
-	    <p> Persistent (Redis/ES)</p>
+	    <p> Persistent model (Redis/ES)</p>
+	    <p> Async queue (Redis)</p>
 	    <p> Pipline/Protocol patterns</p>
 	  </section>
 
@@ -263,8 +241,8 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 (def ^{:doc "adding one"} plus-one
   (s/fn [x] (+ 1 x)))
 
-; call sandbox hosts cluster
-(call plus-one [1] sandbox)
+; run the function on the hosts
+(call plus-one [1] hs)
 
 	    </code></pre>
 	  </section>
@@ -274,6 +252,46 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 	    <a href="./gifs/re-gent-demo.gif">
 		<img src="./gifs/re-gent-demo.gif" alt="" width="1500px" height="500px">
 	    </a>
+	  </section>
+
+	  <section id="re-gent-metrics">
+	    <h2>Re-gent metrics </h2>
+	  </section>
+
+
+	  <section id="reloaded">
+	    <h2> Reloaded workflow </h2>
+<pre><code class="clojure" data-trim contenteditable>
+(ns user
+  [clojure.tools.namespace.repl :refer (refresh refresh-all)]
+  ....
+ )
+
+; create environment from scratch
+(go)
+
+; halt the environment
+(stop)
+
+; stop and go (when re-defining does not work)
+(reset)
+</code></pre>
+	  </section>
+
+	  <section id="reset">
+	    <h2> Reset </h2>
+	    <p> clojure.tools.namespace.repl refresh refresh-all</p>
+	    <p> Works across threads</p>
+	    <p class="fragment highlight-red"> Reset all VARS</p>
+	    <p class="fragment highlight-red"> Atoms state lost</p>
+	    <p class="fragment highlight-green"> Re-defining preferred (protocols)</p>
+	  </section>
+
+	  <section id="future">
+	    <h2>Future </h2>
+	    <p> Re-gent functions in pipelines</p>
+	    <p> Stream into riemann</p>
+	    <p> FreeBSD support </p>
 	  </section>
 
 	  <section>
