@@ -107,13 +107,21 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 
 
 	  <section id="stevedore">
-	    <h2>Shell scripting (pallet.stevedore)</h2>
+	    <h2>Stevedore</h2>
 	    <pre><code class="clojure" data-trim contenteditable>
 ; expands into
 ; # base.clj:190
 ; ls / -la
 (let [target "/" flags "-la"]
   (script ("ls" ~target ~flags)))
+
+(defn free-script []
+  (script
+   (set! R @("free" "-m"))
+   (if (not (= $? 0)) ("exit" 1))
+   (pipe
+     ((println (quoted "${R}")))
+     ("awk" "'NR==2 { print $2 \" \" $3 \" \" $4 }'"))))
 	  </code></pre>
 	  </section>
 
