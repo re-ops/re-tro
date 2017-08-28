@@ -34,15 +34,15 @@
 	  </section>
 
 	  <section id="Intro">
-	    <h2>Domain</h2>
-	    <p> Operations, <span class="fragment highlight-blue"> Orchestrating </span> Machines <span class="fragment highlight-blue"> remotely </span> </p>
-	    <p> and manipulating their <span class="fragment highlight-red"> state </span> </p>
+	    <h2>Operations</h2>
+	    <p> The process of orchestrating computerized resources  </p>
+	    <p> manipulating their state </span> </p>
 	  </section>
 
 	  <section id="shorts">
-	    <h2> Shortcomings </h2>
+	    <h2> Status quo</h2>
 	    <p class ="fragment fade-down">Complex </p>
-	    <p class ="fragment fade-down">Slow cycles</p>
+	    <p class ="fragment fade-down">Slow to react</p>
 	    <p class ="fragment fade-down">Hard to composes</p>
 	    <p class ="fragment fade-down">Data is second class</p>
 	  </section>
@@ -173,11 +173,24 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 	    </code></pre>
 	  </section>
 
+	  <section id="time-seqs">
+	    <h2>Time sequences</h2>
+	    <pre><code class="clojure" data-trim contenteditable>
+(defn seconds
+  ([n f]
+    (periodic-seq
+       (t/plus (local-now) (t/seconds f)) (-> n t/seconds)))
+  ([n]
+    (periodic-seq (local-now) (-> n t/seconds))))
+	    </code></pre>
+	  </section>
+
+
 	  <section id="re-core-overview">
 	    <h3> Re-core</h3>
-	    <p> Manage VMs under AWS, DigitalOcean and KVM</p>
-	    <p> Persistent model (Redis/ES)</p>
-	    <p> Async queue (Redis)</p>
+	    <p> Manage VMs (AWS, DigitalOcean, KVM)</p>
+	    <p> Persistent (Redis/ES)</p>
+	    <p> Queue (Redis)</p>
 	    <p> Pipline/Protocol patterns</p>
 	  </section>
 
@@ -292,16 +305,13 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 	    <p> Re-gent functions in pipelines</p>
 	    <p> Stream into riemann</p>
 	    <p> FreeBSD support </p>
+	    <p> pipeline end points (http)</p>
 	  </section>
 
 	  <section>
-	    <h2> Summary </h2>
+	    <h2> Questions ?</h2>
 	    <p> Check <a href="https://github.com/re-ops">https://github.com/re-ops</a> </p>
           <p> <a href="https://twitter.com/narkisr">@narkisr</a></p>
-	  </section>
-
-	  <section>
-	    <h1>Questions?</h1>
 	  </section>
 
 	  <section id="themes">
