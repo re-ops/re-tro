@@ -35,8 +35,8 @@
 
 	  <section id="Intro">
 	    <h2>Operations</h2>
-	    <p> The process of orchestrating computerized resources  </p>
-	    <p> manipulating their state </span> </p>
+	    <p> The process of managing computerized resources  </p>
+	    <p> by manipulating their state </span> </p>
 	  </section>
 
 	  <section id="shorts">
@@ -242,7 +242,8 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 
 	  <section id="re-gent-overview">
 	    <h3> Re-gent </h3>
-	    <p> Fast persistent secure connections (Zeromq)</p>
+	    <p> Persistent connections (Zeromq)</p>
+          <p> Secure (CurveZMQ) </p>
 	    <p> Distributed Clojure functions </p>
 	    <p> Easy to deploy </p>
 	  </section>
@@ -269,6 +270,20 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 
 	  <section id="re-gent-metrics">
 	    <h2>Re-gent metrics </h2>
+	    <pre><code class="clojure" data-trim contenteditable>
+; using oshi
+(get-in (read-metrics) [:operatingSystem :processes])
+
+{"7695d7ecbd60484281ff2cd0af979cbe" 
+  [{:group "re-ops",
+    :groupID "1000",
+    :kernelTime 420,
+    :name "java",
+    :parentProcessID 1,
+    :path "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java",
+    ...
+   }]}
+	    </code></pre>
 	  </section>
 
 
@@ -302,10 +317,11 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 
 	  <section id="future">
 	    <h2>Future </h2>
+	    <p> Hosts queries </p>
 	    <p> Re-gent functions in pipelines</p>
 	    <p> Stream into riemann</p>
 	    <p> FreeBSD support </p>
-	    <p> pipeline end points (http)</p>
+	    <p> Exposing pipeline end points (http)</p>
 	  </section>
 
 	  <section>
