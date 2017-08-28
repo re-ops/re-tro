@@ -10,7 +10,12 @@
     <link rel="stylesheet" href="css/theme/black.css" id="theme">
 
     <!-- Theme used for syntax highlighting of code -->
-    <link rel="stylesheet" href="lib/css/zenburn.css">
+    <!-- <link rel="stylesheet" href="lib/css/zenburn.css"> -->
+    <link rel="stylesheet" href="lib/styles/github-gist.css">
+    <!-- <link rel="stylesheet" href="lib/styles/docco.css"> -->
+    <!-- <link rel="stylesheet" href="lib/styles/github.css"> -->
+
+
 
     <!-- Printing and PDF exports -->
     <script>
@@ -269,7 +274,7 @@ expands to: (| (| (ls ..) (pick ..)) (pretty))
 	  </section>
 
 	  <section id="re-gent-metrics">
-	    <h2>Re-gent metrics </h2>
+	    <h2> Metrics </h2>
 	    <pre><code class="clojure" data-trim contenteditable>
 ; using oshi
 (get-in (read-metrics) [:operatingSystem :processes])
